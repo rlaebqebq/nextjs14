@@ -1,9 +1,10 @@
+'use client';
+
 import { useState, useEffect, useCallback, ReactElement } from 'react';
 import styled from 'styled-components';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 
-import CaretDownIcon from 'assets/svg/caret-down.svg';
-import { colors } from '@styles/common';
+import { colors } from '../styles/common';
 
 interface AccordionItemProps {
   id: string;
@@ -43,7 +44,7 @@ const AccordionItem: React.FC<AccordionItemProps> = ({
   ) : (
     <Item $open={open} $num={num}>
       <Button type='button' onClick={onClick} $open={open}>
-        {title} <CaretDownIcon />
+        {title} ...
       </Button>
       <div>{children}</div>
     </Item>
