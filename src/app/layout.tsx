@@ -15,7 +15,7 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
     <html lang='ko'>
       <body className={inter.className}>
         <StyledComponentsRegistry>
-          <Layout>children</Layout>
+          <Layout>{children}</Layout>
         </StyledComponentsRegistry>
       </body>
     </html>

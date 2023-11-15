@@ -15,6 +15,7 @@ export const colors = {
   GRAYE: '#eeeeee',
   GRAY7: '#777777',
   GRAYF7: '#f3f5f7',
+  GRAYFA: '#fafafa',
 
   RED: '#ff3b30',
   ORANGE: '#ff9500',
@@ -26,7 +27,7 @@ export const colors = {
   PURPLE: '#af52de',
   PINK: '#ff2d55',
 
-  PRIMARY: '#4040db',
+  PRIMARY: '#2B344C',
 };
 
 export const textEllipsis = ({ n = 1 }: { n?: number }) => {

@@ -1,57 +1,51 @@
 'use client';
 
-import { useState, useEffect, useCallback, ReactElement } from 'react';
+import { useState, useEffect, useCallback, ReactElement, Children } from 'react';
 import styled from 'styled-components';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import CaretDownIcon from '../assets/svg/caret-down.svg';
 
 import { colors } from '../styles/common';
+import Link from 'next/link';
+import { Console } from 'inspector';
 
 interface AccordionItemProps {
-  id: string;
   title: string;
   open?: boolean;
   onClick?: () => void;
-  children?: ReactElement;
-  num?: number;
-  link?: string;
+  children?: ReactElement[] | ReactElement;
+  href?: string;
 }
 
-const AccordionItem: React.FC<AccordionItemProps> = ({
-  id,
-  title,
-  open,
-  onClick,
-  children,
-  num,
-  link,
-}: AccordionItemProps) => {
+const AccordionItem: React.FC<AccordionItemProps> = ({ title, open, onClick, children, href }: AccordionItemProps) => {
   const router = useRouter();
 
   const handleClick = () => {
-    if (onClick && link) {
+    if (onClick && href) {
       onClick();
-      router.push(link);
-      // navigate(link, { replace: true })
+      router.push(href);
     }
   };
 
-  return num === 0 && link && children === undefined ? (
-    <Item $open={open} $num={num}>
+  return Array.isArray(children) ? (
+    <Item $open={open} $num={children.length}>
+      <Button type='button' onClick={onClick} $open={open}>
+        {title}
+        <CaretDownIcon />
+      </Button>
+      <div>{children}</div>
+    </Item>
+  ) : (
+    <Item $open={open} $num={0}>
       <Button type='button' onClick={handleClick} $open={open}>
         {title}
       </Button>
-    </Item>
-  ) : (
-    <Item $open={open} $num={num}>
-      <Button type='button' onClick={onClick} $open={open}>
-        {title} ...
-      </Button>
-      <div>{children}</div>
     </Item>
   );
 };
 
 const AccordionMenu = ({ children }: { children: ReactElement[] }) => {
+  const pathname = usePathname();
   const [child, setChild] = useState<ReactElement[]>([]);
   const [openItem, setOpenItem] = useState<string>();
 
@@ -59,12 +53,19 @@ const AccordionMenu = ({ children }: { children: ReactElement[] }) => {
     children.length && setChild(children);
   }, [children]);
 
-  const clickHandler = useCallback((id: any) => {
-    setOpenItem((prev: any) => {
-      if (id === prev) return '';
-      return id;
-    });
+  const clickHandler = useCallback((title: any) => {
+    setOpenItem(title);
   }, []);
+
+  useEffect(() => {
+    child.forEach((elt: any) => {
+      if (elt.props.children) {
+        Children.map(elt.props.children, (childElt: any) => {
+          if (pathname === childElt?.props.href) clickHandler(elt.props.title);
+        });
+      } else if (pathname === elt.props.href) clickHandler(elt.props.title);
+    });
+  }, [pathname, child, clickHandler]);
 
   return (
     <Div>
@@ -73,12 +74,10 @@ const AccordionMenu = ({ children }: { children: ReactElement[] }) => {
         return (
           <AccordionItem
             key={key}
-            id={elt.props.id}
+            onClick={() => clickHandler(elt.props.title)}
+            open={elt.props.title === openItem}
             title={elt.props.title}
-            open={elt.props.id === openItem}
-            onClick={() => clickHandler(elt.props.id)}
-            num={elt.props.num}
-            link={elt.props.link}
+            href={elt.props.href}
           >
             {elt.props.children}
           </AccordionItem>
@@ -90,23 +89,35 @@ const AccordionMenu = ({ children }: { children: ReactElement[] }) => {
 
 const Button = styled.button<{ $open?: boolean }>`
   color: ${({ $open }) => {
-    if ($open) return `${colors.PRIMARY}`;
-    return `${colors.GRAY2}`;
+    if ($open) return `${colors.WHITE}`;
+    return `${colors.GRAYA}`;
   }};
-  line-height: 36px;
+  line-height: 50px;
   font-size: 14px;
   width: 100%;
   text-align: left;
   position: relative;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0 30px;
+  font-weight: 700;
+  border-top: 1px solid ${colors.GRAY6};
 
   svg {
     position: absolute;
-    right: 0;
+    right: 20px;
     height: 13px;
     top: 50%;
     transform: ${({ $open }) => {
       if ($open) return `translateY(-50%) rotate(180deg)`;
-      return `translateY(-50%) rotate(0)`;
+      return `translateY(-50%) rotate(270deg)`;
+    }};
+    transition: all;
+
+    fill: ${({ $open }) => {
+      if ($open) return `${colors.WHITE}`;
+      return `${colors.GRAYA}`;
     }};
   }
 `;
@@ -116,39 +127,39 @@ const Item = styled.div<{ $open?: boolean; $num?: number }>`
   overflow: hidden;
 
   a {
-    color: ${colors.GRAY2};
     display: inline-block;
     width: 100%;
+    line-height: 50px;
+    font-size: 14px;
+    white-space: nowrap;
 
     &.active {
-      color: ${colors.PRIMARY};
+      color: ${colors.WHITE};
     }
+
+    color: ${({ $open }) => {
+      if ($open) return `${colors.GRAYA}`;
+      return `${colors.WHITE}`;
+    }};
   }
 
   > div {
     transition: all 0.25s;
     overflow: hidden;
-    padding: 0 15px;
     width: 100%;
     text-align: left;
+    padding: 0 30px;
 
     height: ${({ $open, $num }) => {
-      if ($open) return `calc(36px * ${$num})`;
+      if ($open) return `calc(50px * ${$num})`;
       return `0`;
     }};
-
-    li {
-      line-height: 36px;
-      font-size: 14px;
-      white-space: nowrap;
-    }
   }
 `;
 
 const Div = styled.div`
-  width: fit-content;
-  border: 1px solid ${colors.GRAYF7};
-  padding: 30px;
+  max-width: 300px;
+  border-bottom: 1px solid ${colors.GRAY6};
 `;
 
 AccordionMenu.Item = AccordionItem;

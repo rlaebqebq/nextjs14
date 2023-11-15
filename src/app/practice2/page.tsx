@@ -3,15 +3,15 @@
 import styled from 'styled-components';
 import { NextPage } from 'next';
 
-const HomePage = () => {
+const PraticePage = () => {
   return (
     <div>
-      <p>sdf</p>
+      <p>case-platform</p>
     </div>
   );
 };
-const Home = () => {
-  return <HomePage />;
+const Page = () => {
+  return <PraticePage />;
 };
 
-export default Home;
+export default Page;

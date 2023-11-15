@@ -7,45 +7,50 @@ import { colors, flexbox } from '../styles/common';
 
 export const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <Wrapper>
-      <InnerWrapper>
+    <InnerWrapper>
+      <NavDiv>
+        <TopDiv>
+          <p>어쩌고저쩌고</p>
+        </TopDiv>
         <AccordionMenu>
-          <AccordionMenu.Item id='홈' title='홈' num={0} link='/' />
-          <AccordionMenu.Item id='Use-case 관리' title='Use-case 관리' num={2}>
-            <ul>
-              <li>
-                <NavLink href='/practice'>practice</NavLink>
-              </li>
-              <li>
-                <NavLink href='/case-platform'>플랫폼 활용 사례 관리</NavLink>
-              </li>
-            </ul>
+          <AccordionMenu.Item title='홈' href='/' />
+          <AccordionMenu.Item title='관리'>
+            <NavLink href='/practice'>practice</NavLink>
+            <NavLink href='/practice2'>practice2</NavLink>
           </AccordionMenu.Item>
+          <AccordionMenu.Item title='관리3' href='practice3' />
         </AccordionMenu>
-        <ContentWrapper>{children}</ContentWrapper>
-      </InnerWrapper>
-      {/* <Footer /> */}
-    </Wrapper>
+        <BottomDiv>
+          <p>어쩌고저쩌고</p>
+        </BottomDiv>
+      </NavDiv>
+      <ContentWrapper>{children}</ContentWrapper>
+    </InnerWrapper>
   );
 };
+const BottomDiv = styled.div`
+  position: absolute;
+  bottom: 0;
+`;
+const TopDiv = styled.div`
+  height: 75px;
+`;
 
-const Wrapper = styled.div`
-  width: 100vw;
+const NavDiv = styled.div`
+  position: relative;
+  background: ${colors.PRIMARY};
+  color: ${colors.WHITE};
   height: 100vh;
+  border-bottom-right-radius: 40px;
 `;
 
 const InnerWrapper = styled.div`
-  ${flexbox({ ai: 'stretch', jc: 'flex-start', gap: 30 })}
-  padding: 0 30px 30px 30px;
-  margin: 0 auto;
+  ${flexbox({ ai: 'stretch', jc: 'flex-start' })}
   width: 100%;
+  background: ${colors.GRAYF7};
 `;
 
 const ContentWrapper = styled.div`
   overflow: hidden;
   width: 100%;
-  padding: 64px;
-  height: 100%;
-  min-height: calc(100vh - 350px);
-  min-width: 900px;
 `;
