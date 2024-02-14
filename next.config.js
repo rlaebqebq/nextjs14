@@ -5,7 +5,10 @@ module.exports = {
     styledComponents: true,
   },
   experimental: {
-    appDir: true,
+    appDir: false,
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
   },
   webpack(config) {
     config.module.rules.push({

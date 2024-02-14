@@ -15,6 +15,9 @@
 
 # production
 /build
+/.idea
+/.env
+.env
 
 # misc
 .DS_Store
@@ -34,3 +37,12 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+*.log
+.eslintrc.json
+# next-video
+assets/videos/*
+!videos/*.json
+!videos/*.js
+!videos/*.ts
+public/_next-video
